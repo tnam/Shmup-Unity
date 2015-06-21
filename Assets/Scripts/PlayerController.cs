@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour {
 		
 		m_XMin = leftScreenEdge.x + m_BorderDistance;
 		m_XMax = rightScreenEdge.x - m_BorderDistance;
+		
+		m_Sounds = GetComponents<AudioSource>();
+		m_LaserSound = m_Sounds[0];
+		m_ExplosionSound = m_Sounds[1];
 	}
 	
 	// Update is called once per frame
@@ -57,7 +61,7 @@ public class PlayerController : MonoBehaviour {
 			GameObject laserBeam = Instantiate(m_LaserPrefab, transform.position, Quaternion.identity) as GameObject;
 			laserBeam.rigidbody2D.velocity = new Vector3(0, m_ProjectileSpeed, 0);
 			
-			audio.Play();
+			m_LaserSound.Play();
 	}
 	
 	void OnTriggerEnter2D (Collider2D collider) {
@@ -73,11 +77,23 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	void Die() {
-		Destroy(gameObject);
+		m_ExplosionSound.Play();
+		renderer.enabled = false;
+		Destroy(gameObject, m_ExplosionSound.clip.length);
+		//m_LevelManager.LoadLevel("Game Over");
+		Invoke("LoadGameOver", 2);
+	}
+	
+	void LoadGameOver() {
 		m_LevelManager.LoadLevel("Game Over");
 	}
+	
 	
 	private float m_XMin;
 	private float m_XMax;
 	private LevelManager m_LevelManager;
+	private AudioSource[] m_Sounds;
+	private AudioSource m_LaserSound;
+	private AudioSource m_ExplosionSound;
+	
 }

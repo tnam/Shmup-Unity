@@ -12,7 +12,6 @@ public class MusicPlayer : MonoBehaviour {
 	void Start () {
 		if (instance != null && instance != this) {
 			Destroy (gameObject);
-			print ("Duplicate music player self-destructing!");
 		} else {
 			instance = this;
 			GameObject.DontDestroyOnLoad(gameObject);
@@ -43,5 +42,5 @@ public class MusicPlayer : MonoBehaviour {
 		m_Music.Play();
 	}
 	
-	private AudioSource m_Music;
+	private static AudioSource m_Music;
 }
